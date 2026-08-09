@@ -23,8 +23,8 @@ export function DataTable<T extends Record<string, any>>({
   columns,
   isLoading = false,
   searchKey,
-  searchPlaceholder = "Buscar...",
-  emptyMessage = "No se encontraron registros",
+  searchPlaceholder = "Search...",
+  emptyMessage = "No records found",
   pageSize = 8,
 }: DataTableProps<T>) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -66,11 +66,11 @@ export function DataTable<T extends Record<string, any>>({
             />
           </div>
           <div className="text-xs text-slate-400 font-medium">
-            Mostrando{" "}
+            Showing{" "}
             <span className="text-slate-200 font-semibold">
               {filteredData.length}
             </span>{" "}
-            registros
+            records
           </div>
         </div>
       )}
@@ -144,11 +144,11 @@ export function DataTable<T extends Record<string, any>>({
         {!isLoading && totalPages > 1 && (
           <div className="px-6 py-3.5 bg-slate-950/40 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
             <div>
-              Página{" "}
+              Page{" "}
               <span className="font-semibold text-slate-200">
                 {currentPage}
               </span>{" "}
-              de{" "}
+              of{" "}
               <span className="font-semibold text-slate-200">{totalPages}</span>
             </div>
             <div className="flex items-center gap-2">

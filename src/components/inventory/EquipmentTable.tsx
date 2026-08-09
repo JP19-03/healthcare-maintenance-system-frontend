@@ -1,9 +1,16 @@
-import React from 'react';
-import { Menu, Transition } from '@headlessui/react';
-import { MoreVertical, Edit2, AlertTriangle, Trash2, MapPin, Building2 } from 'lucide-react';
-import type { Equipment } from '../../types';
-import DataTable from '../common/DataTable';
-import type { ColumnDef } from '../common/DataTable';
+import React from "react";
+import { Menu, Transition } from "@headlessui/react";
+import {
+  MoreVertical,
+  Edit2,
+  AlertTriangle,
+  Trash2,
+  MapPin,
+  Building2,
+} from "lucide-react";
+import type { Equipment } from "../../types";
+import DataTable from "../common/DataTable";
+import type { ColumnDef } from "../common/DataTable";
 
 interface EquipmentTableProps {
   data: Equipment[];
@@ -20,27 +27,27 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
   onReportBreakdown,
   onDelete,
 }) => {
-  const getStatusBadge = (status: Equipment['status']) => {
+  const getStatusBadge = (status: Equipment["status"]) => {
     switch (status) {
-      case 'ACTIVE':
+      case "ACTIVE":
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            Operativo
+            Operational
           </span>
         );
-      case 'BROKEN':
+      case "BROKEN":
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
-            Averiado
+            Broken
           </span>
         );
-      case 'IN_MAINTENANCE':
+      case "IN_MAINTENANCE":
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-            En Mantenimiento
+            In Maintenance
           </span>
         );
       default:
@@ -50,18 +57,20 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
 
   const columns: ColumnDef<Equipment>[] = [
     {
-      header: 'Equipo & Modelo',
+      header: "Equipment & Model",
       cell: (item) => (
         <div>
           <p className="font-bold text-white group-hover:text-teal-400 transition">
             {item.name}
           </p>
-          <p className="text-xs text-slate-400 font-medium">Mod: {item.model}</p>
+          <p className="text-xs text-slate-400 font-medium">
+            Mod: {item.model}
+          </p>
         </div>
       ),
     },
     {
-      header: 'N° Serie',
+      header: "Serial No.",
       cell: (item) => (
         <span className="font-mono text-xs text-teal-300 font-semibold bg-teal-500/10 border border-teal-500/20 px-2.5 py-1 rounded-lg">
           {item.serialNumber}
@@ -69,7 +78,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
       ),
     },
     {
-      header: 'Departamento / Ubicación',
+      header: "Department / Location",
       cell: (item) => (
         <div className="space-y-1 text-xs">
           <div className="flex items-center gap-1.5 text-slate-300 font-medium">
@@ -84,12 +93,12 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
       ),
     },
     {
-      header: 'Estado Operativo',
+      header: "Operational Status",
       cell: (item) => getStatusBadge(item.status),
     },
     {
-      header: 'Acciones',
-      className: 'text-right',
+      header: "Actions",
+      className: "text-right",
       cell: (item) => (
         <div className="flex justify-end">
           <Menu as="div" className="relative inline-block text-left">
@@ -111,26 +120,28 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
                     <button
                       onClick={() => onEdit(item)}
                       className={`${
-                        active ? 'bg-slate-800 text-teal-400' : 'text-slate-300'
+                        active ? "bg-slate-800 text-teal-400" : "text-slate-300"
                       } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer`}
                     >
                       <Edit2 className="w-3.5 h-3.5 text-teal-400" />
-                      <span>Editar Equipo</span>
+                      <span>Edit Equipment</span>
                     </button>
                   )}
                 </Menu.Item>
 
-                {item.status !== 'BROKEN' && (
+                {item.status !== "BROKEN" && (
                   <Menu.Item>
                     {({ active }) => (
                       <button
                         onClick={() => onReportBreakdown(item)}
                         className={`${
-                          active ? 'bg-rose-500/10 text-rose-400' : 'text-rose-400'
+                          active
+                            ? "bg-rose-500/10 text-rose-400"
+                            : "text-rose-400"
                         } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer`}
                       >
                         <AlertTriangle className="w-3.5 h-3.5" />
-                        <span>Reportar Falla</span>
+                        <span>Report Breakdown</span>
                       </button>
                     )}
                   </Menu.Item>
@@ -141,11 +152,13 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
                     <button
                       onClick={() => onDelete(item.id)}
                       className={`${
-                        active ? 'bg-red-500/10 text-red-400' : 'text-slate-400 hover:text-red-400'
+                        active
+                          ? "bg-red-500/10 text-red-400"
+                          : "text-slate-400 hover:text-red-400"
                       } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer border-t border-slate-800/80 mt-1 pt-2`}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Eliminar Equipo</span>
+                      <span>Delete Equipment</span>
                     </button>
                   )}
                 </Menu.Item>
@@ -163,8 +176,8 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
       columns={columns}
       isLoading={isLoading}
       searchKey="name"
-      searchPlaceholder="Buscar por nombre o modelo de equipo..."
-      emptyMessage="No hay equipos registrados en el inventario"
+      searchPlaceholder="Search by equipment name or model..."
+      emptyMessage="No equipment registered in inventory"
     />
   );
 };
