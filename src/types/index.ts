@@ -46,3 +46,31 @@ export const AuthenticatedUserSchema = z.object({
     fullName: z.string(),
 });
 export type AuthenticatedUser = z.infer<typeof AuthenticatedUserSchema>;
+
+/** INVENTORY BOUNDED CONTEXT */
+export const EquipmentStatusEnum = z.enum(['ACTIVE', 'BROKEN', 'IN_MAINTENANCE']);
+export type EquipmentStatus = z.infer<typeof EquipmentStatusEnum>;
+
+export const CreateEquipmentSchema = z.object({
+    name: z.string().min(2, 'Equipment name is required'),
+    serialNumber: z.string().min(2, 'Serial number is required'),
+    model: z.string().min(1, 'Model is required'),
+    location: z.string().min(1, 'Location is required'),
+    department: z.string().min(1, 'Department is required'),
+});
+export type CreateEquipmentFormData = z.infer<typeof CreateEquipmentSchema>;
+
+export const UpdateEquipmentSchema = CreateEquipmentSchema;
+export type UpdateEquipmentFormData = z.infer<typeof UpdateEquipmentSchema>;
+
+export const EquipmentSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    serialNumber: z.string(),
+    model: z.string(),
+    location: z.string(),
+    department: z.string(),
+    status: EquipmentStatusEnum,
+    isDeleted: z.boolean().optional(),
+});
+export type Equipment = z.infer<typeof EquipmentSchema>;

@@ -1,11 +1,28 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
+import EquipmentView from "./views/inventory/EquipmentView";
+import AppLayout from "./components/AppLayout";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public Auth Routes */}
         <Route path="/login" element={<LoginView />} />
+
+        {/* Protected App Routes wrapped in AppLayout */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/" element={<Navigate to="/equipment" replace />} />
+          <Route path="/equipment" element={<EquipmentView />} />
+          <Route path="/dashboard" element={<EquipmentView />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
