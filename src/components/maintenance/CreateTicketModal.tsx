@@ -12,6 +12,7 @@ interface CreateTicketModalProps {
   onClose: () => void;
   onSubmit: (data: CreateTicketFormData) => void;
   equipmentList: Equipment[];
+  preSelectedEquipmentId?: number;
   currentUserId?: number;
   isLoading?: boolean;
 }
@@ -21,6 +22,7 @@ export default function CreateTicketModal({
   onClose,
   onSubmit,
   equipmentList,
+  preSelectedEquipmentId,
   currentUserId = 1,
   isLoading = false,
 }: CreateTicketModalProps) {
@@ -32,7 +34,7 @@ export default function CreateTicketModal({
   } = useForm<CreateTicketFormData>({
     resolver: zodResolver(CreateTicketSchema),
     defaultValues: {
-      equipmentId: 0,
+      equipmentId: preSelectedEquipmentId || 0,
       reportedByUserId: currentUserId,
       issueDescription: "",
       photoUrl: "",
@@ -43,14 +45,14 @@ export default function CreateTicketModal({
   React.useEffect(() => {
     if (isOpen) {
       reset({
-        equipmentId: equipmentList[0]?.id || 0,
+        equipmentId: preSelectedEquipmentId || equipmentList[0]?.id || 0,
         reportedByUserId: currentUserId,
         issueDescription: "",
         photoUrl: "",
         priority: "MEDIUM",
       });
     }
-  }, [isOpen, equipmentList, currentUserId, reset]);
+  }, [isOpen, equipmentList, preSelectedEquipmentId, currentUserId, reset]);
 
   return (
     <Transition show={isOpen} as={React.Fragment}>

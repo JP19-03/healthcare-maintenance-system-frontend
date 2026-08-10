@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -12,6 +13,7 @@ import {
   User,
   X,
 } from "lucide-react";
+import MyProfileModal from "./iam/MyProfileModal";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -22,6 +24,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -43,7 +46,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       label: "Equipment",
       path: "/equipment",
       icon: Stethoscope,
-      roles: ["ROLE_ADMIN", "ROLE_MANAGER"],
+      roles: ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TECH"],
     },
     {
       label: "Work Orders",
@@ -131,13 +134,17 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
       {/* Footer Profile & Logout */}
       <div className="p-4 border-t border-slate-800 bg-slate-900/50">
-        <div className="flex items-center justify-between gap-3 mb-3">
+        <div
+          onClick={() => setIsProfileOpen(true)}
+          className="flex items-center justify-between gap-3 mb-3 p-2 rounded-xl hover:bg-slate-800/80 transition cursor-pointer group"
+          title="Click to view My Profile details"
+        >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-teal-400 shrink-0">
+            <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-teal-400 group-hover:border-teal-500 transition shrink-0">
               <User className="w-5 h-5" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-white truncate">
+              <p className="text-sm font-semibold text-white group-hover:text-teal-400 transition truncate">
                 {user?.fullName || user?.username}
               </p>
               <div className="flex items-center gap-1.5">
@@ -149,6 +156,11 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             </div>
           </div>
         </div>
+
+        <MyProfileModal
+          isOpen={isProfileOpen}
+          onClose={() => setIsProfileOpen(false)}
+        />
 
         <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-800/80">
           <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20 uppercase">

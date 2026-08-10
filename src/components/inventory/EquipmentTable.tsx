@@ -19,6 +19,7 @@ interface EquipmentTableProps {
   onEdit: (equipment: Equipment) => void;
   onReportBreakdown: (equipment: Equipment) => void;
   onDelete: (equipmentId: number) => void;
+  onViewDetails?: (equipment: Equipment) => void;
 }
 
 export const EquipmentTable: React.FC<EquipmentTableProps> = ({
@@ -27,6 +28,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
   onEdit,
   onReportBreakdown,
   onDelete,
+  onViewDetails,
 }) => {
   const { user } = useAuth();
   const canManage =
@@ -64,8 +66,12 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
     {
       header: "Equipment & Model",
       cell: (item) => (
-        <div>
-          <p className="font-bold text-white group-hover:text-teal-400 transition">
+        <div
+          onClick={() => onViewDetails && onViewDetails(item)}
+          className="cursor-pointer group/item"
+          title="Click to view machine specs & maintenance history"
+        >
+          <p className="font-bold text-white group-hover/item:text-teal-400 transition underline-offset-2 group-hover/item:underline">
             {item.name}
           </p>
           <p className="text-xs text-slate-400 font-medium">
@@ -122,17 +128,17 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-full top-1/2 -translate-y-1/2 mr-2 w-48 origin-right rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-1.5 focus:outline-none z-50">
+              <Menu.Items className="absolute right-full top-1/2 -translate-y-1/2 mr-2 flex items-center gap-1 bg-slate-900 border border-slate-700 shadow-2xl p-1.5 rounded-xl focus:outline-none z-50 whitespace-nowrap">
                 <Menu.Item>
                   {({ active }) => (
                     <button
                       onClick={() => onEdit(item)}
                       className={`${
                         active ? "bg-slate-800 text-teal-400" : "text-slate-300"
-                      } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer`}
+                      } flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer`}
                     >
                       <Edit2 className="w-3.5 h-3.5 text-teal-400" />
-                      <span>Edit Equipment</span>
+                      <span>Edit</span>
                     </button>
                   )}
                 </Menu.Item>
@@ -146,7 +152,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
                           active
                             ? "bg-rose-500/10 text-rose-400"
                             : "text-rose-400"
-                        } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer`}
+                        } flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer`}
                       >
                         <AlertTriangle className="w-3.5 h-3.5" />
                         <span>Report Breakdown</span>
@@ -163,7 +169,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
                         active
                           ? "bg-red-500/10 text-red-400"
                           : "text-slate-400 hover:text-red-400"
-                      } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer border-t border-slate-800/80 mt-1 pt-2`}
+                      } flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer border-l border-slate-800/80 pl-2`}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Delete</span>

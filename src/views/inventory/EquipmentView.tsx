@@ -9,10 +9,17 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { equipmentService } from "../../services/equipmentService";
-import type { CreateEquipmentFormData, Equipment } from "../../types";
+import { ticketService } from "../../services/ticketService";
+import type {
+  CreateEquipmentFormData,
+  CreateTicketFormData,
+  Equipment,
+} from "../../types";
 import { EquipmentTable } from "../../components/inventory/EquipmentTable";
 import { EquipmentFormModal } from "../../components/inventory/EquipmentFormModal";
+import CreateTicketModal from "../../components/maintenance/CreateTicketModal";
 import { useAuth } from "../../context/AuthContext";
+import EquipmentDetailsModal from "../../components/inventory/EquipmentDetailsModal";
 
 export default function EquipmentView() {
   const queryClient = useQueryClient();
@@ -26,6 +33,16 @@ export default function EquipmentView() {
   );
   const [selectedStatusFilter, setSelectedStatusFilter] =
     useState<string>("ALL");
+
+  // State for Create Ticket breakdown modal
+  const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
+  const [selectedEquipmentForTicket, setSelectedEquipmentForTicket] =
+    useState<Equipment | null>(null);
+
+  // State for Equipment Details & History modal
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedEquipmentForDetails, setSelectedEquipmentForDetails] =
+    useState<Equipment | null>(null);
 
   // Fetch all equipment
   const { data: equipmentList = [], isLoading } = useQuery({
@@ -75,6 +92,25 @@ export default function EquipmentView() {
     },
   });
 
+  // Create Ticket (Report Breakdown) Mutation
+  const createTicketMutation = useMutation({
+    mutationFn: ticketService.createTicket,
+    onSuccess: () => {
+      toast.success(
+        "Work order reported successfully! Equipment status updated to BROKEN.",
+      );
+      queryClient.invalidateQueries({ queryKey: ["equipment"] });
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
+      setIsTicketModalOpen(false);
+      setSelectedEquipmentForTicket(null);
+    },
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message || "Error creating work order",
+      );
+    },
+  });
+
   const handleCreateOrUpdate = (formData: CreateEquipmentFormData) => {
     if (selectedEquipment) {
       updateMutation.mutate({ id: selectedEquipment.id, data: formData });
@@ -89,9 +125,20 @@ export default function EquipmentView() {
   };
 
   const handleReportBreakdown = (equipment: Equipment) => {
-    toast.info(
-      `Redirecting to report failure for ${equipment.name} (${equipment.serialNumber})`,
-    );
+    setSelectedEquipmentForTicket(equipment);
+    setIsTicketModalOpen(true);
+  };
+
+  const handleViewDetails = (equipment: Equipment) => {
+    setSelectedEquipmentForDetails(equipment);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleCreateTicketSubmit = (formData: CreateTicketFormData) => {
+    createTicketMutation.mutate({
+      ...formData,
+      reportedByUserId: user?.id || 1,
+    });
   };
 
   const handleDelete = (equipmentId: number) => {
@@ -188,7 +235,7 @@ export default function EquipmentView() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+      <div className="flex items-center gap-2 border-b border-slate-800 pb-3 overflow-x-auto">
         {[
           { key: "ALL", label: "All", count: totalCount },
           { key: "ACTIVE", label: "Operational", count: activeCount },
@@ -202,7 +249,7 @@ export default function EquipmentView() {
           <button
             key={tab.key}
             onClick={() => setSelectedStatusFilter(tab.key)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shrink-0 ${
               selectedStatusFilter === tab.key
                 ? "bg-teal-500/10 text-teal-400 border border-teal-500/30"
                 : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
@@ -223,6 +270,7 @@ export default function EquipmentView() {
         onEdit={handleEdit}
         onReportBreakdown={handleReportBreakdown}
         onDelete={handleDelete}
+        onViewDetails={handleViewDetails}
       />
 
       {/* Register/Edit Equipment Form Modal */}
@@ -235,6 +283,30 @@ export default function EquipmentView() {
         onSubmit={handleCreateOrUpdate}
         initialData={selectedEquipment}
         isLoading={createMutation.isPending || updateMutation.isPending}
+      />
+
+      {/* Report Breakdown / Create Ticket Modal */}
+      <CreateTicketModal
+        isOpen={isTicketModalOpen}
+        onClose={() => {
+          setIsTicketModalOpen(false);
+          setSelectedEquipmentForTicket(null);
+        }}
+        onSubmit={handleCreateTicketSubmit}
+        equipmentList={equipmentList}
+        preSelectedEquipmentId={selectedEquipmentForTicket?.id}
+        currentUserId={user?.id}
+        isLoading={createTicketMutation.isPending}
+      />
+
+      {/* Equipment Details & Maintenance History Modal */}
+      <EquipmentDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedEquipmentForDetails(null);
+        }}
+        equipmentId={selectedEquipmentForDetails?.id}
       />
     </div>
   );

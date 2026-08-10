@@ -160,7 +160,7 @@ export default function TicketTable({
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-full top-1/2 -translate-y-1/2 mr-2 w-48 origin-right rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-1.5 focus:outline-none z-50">
+              <Menu.Items className="absolute right-full top-1/2 -translate-y-1/2 mr-2 flex items-center gap-1 bg-slate-900 border border-slate-700 shadow-2xl p-1.5 rounded-xl focus:outline-none z-50 whitespace-nowrap">
                 {onAssignTech &&
                   (item.status === "OPEN" || item.status === "IN_PROGRESS") && (
                     <Menu.Item>
@@ -171,13 +171,13 @@ export default function TicketTable({
                             active
                               ? "bg-amber-500/10 text-amber-400"
                               : "text-amber-400"
-                          } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer`}
+                          } flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer`}
                         >
                           <Wrench className="w-3.5 h-3.5" />
                           <span>
                             {item.status === "IN_PROGRESS"
-                              ? "Reassign Tech"
-                              : "Assign Technician"}
+                              ? "Reassign"
+                              : "Assign Tech"}
                           </span>
                         </button>
                       )}
@@ -194,7 +194,7 @@ export default function TicketTable({
                             active
                               ? "bg-emerald-500/10 text-emerald-400"
                               : "text-emerald-400"
-                          } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer`}
+                          } flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer`}
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           <span>Resolve Ticket</span>
@@ -209,10 +209,8 @@ export default function TicketTable({
                       <button
                         onClick={() => onCloseTicket(item.id)}
                         className={`${
-                          active
-                            ? "bg-slate-800 text-slate-300"
-                            : "text-slate-400"
-                        } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer`}
+                          active ? "bg-slate-800 text-slate-300" : "text-slate-400"
+                        } flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition cursor-pointer`}
                       >
                         <CheckSquare className="w-3.5 h-3.5" />
                         <span>Close Ticket</span>
