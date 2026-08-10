@@ -74,3 +74,47 @@ export const EquipmentSchema = z.object({
     isDeleted: z.boolean().optional(),
 });
 export type Equipment = z.infer<typeof EquipmentSchema>;
+
+/** MAINTENANCE BOUNDED CONTEXT */
+export const TicketStatusEnum = z.enum(['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']);
+export type TicketStatus = z.infer<typeof TicketStatusEnum>;
+
+export const TicketPriorityEnum = z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']);
+export type TicketPriority = z.infer<typeof TicketPriorityEnum>;
+
+export const CreateTicketSchema = z.object({
+    equipmentId: z.number().positive('Select a valid equipment'),
+    reportedByUserId: z.number().positive('Reporting user is required'),
+    issueDescription: z.string().min(5, 'Issue description must be at least 5 characters long'),
+    photoUrl: z.string().optional(),
+    priority: TicketPriorityEnum,
+});
+export type CreateTicketFormData = z.infer<typeof CreateTicketSchema>;
+
+export const AssignTechnicianSchema = z.object({
+    assignedTechUserId: z.number().positive('Select an assigned technician'),
+});
+export type AssignTechnicianFormData = z.infer<typeof AssignTechnicianSchema>;
+
+export const ResolveTicketSchema = z.object({
+    technicalNotes: z.string().min(5, 'Technical notes must be at least 5 characters long'),
+});
+export type ResolveTicketFormData = z.infer<typeof ResolveTicketSchema>;
+
+export const TicketSchema = z.object({
+    id: z.number(),
+    equipmentId: z.number(),
+    equipmentName: z.string().nullable().optional(),
+    reportedByUserId: z.number(),
+    reportedByUserName: z.string().nullable().optional(),
+    assignedTechUserId: z.number().nullable().optional(),
+    assignedTechUserName: z.string().nullable().optional(),
+    issueDescription: z.string(),
+    technicalNotes: z.string().nullable().optional(),
+    photoUrl: z.string().nullable().optional(),
+    status: TicketStatusEnum,
+    priority: TicketPriorityEnum,
+    createdAt: z.string().nullable().optional(),
+    resolvedAt: z.string().nullable().optional(),
+});
+export type Ticket = z.infer<typeof TicketSchema>;
