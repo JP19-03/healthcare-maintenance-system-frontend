@@ -12,9 +12,14 @@ import { equipmentService } from "../../services/equipmentService";
 import type { CreateEquipmentFormData, Equipment } from "../../types";
 import { EquipmentTable } from "../../components/inventory/EquipmentTable";
 import { EquipmentFormModal } from "../../components/inventory/EquipmentFormModal";
+import { useAuth } from "../../context/AuthContext";
 
 export default function EquipmentView() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const canManage =
+    user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER";
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEquipment, setSelectedEquipment] = useState<Equipment | null>(
     null,
@@ -84,27 +89,24 @@ export default function EquipmentView() {
   };
 
   const handleReportBreakdown = (equipment: Equipment) => {
-    toast.info(`Starting breakdown report for ${equipment.name}...`);
-    // Will link to Ticket creation modal in Maintenance context
+    toast.info(
+      `Redirecting to report failure for ${equipment.name} (${equipment.serialNumber})`,
+    );
   };
 
-  const handleDelete = (id: number) => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this equipment from inventory?",
-      )
-    ) {
-      deleteMutation.mutate(id);
+  const handleDelete = (equipmentId: number) => {
+    if (window.confirm("Are you sure you want to delete this equipment?")) {
+      deleteMutation.mutate(equipmentId);
     }
   };
 
-  // Filtered Equipment List by Status Tab
-  const filteredEquipment = equipmentList.filter((item) => {
+  // Filter equipment based on selected tab
+  const filteredEquipment = equipmentList.filter((equipment) => {
     if (selectedStatusFilter === "ALL") return true;
-    return item.status === selectedStatusFilter;
+    return equipment.status === selectedStatusFilter;
   });
 
-  // Metrics Counters
+  // KPI counters
   const totalCount = equipmentList.length;
   const activeCount = equipmentList.filter((e) => e.status === "ACTIVE").length;
   const brokenCount = equipmentList.filter((e) => e.status === "BROKEN").length;
@@ -115,27 +117,29 @@ export default function EquipmentView() {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
-            <Stethoscope className="w-8 h-8 text-teal-400" />
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <Stethoscope className="w-7 h-7 sm:w-8 sm:h-8 text-teal-400" />
             Medical Equipment Inventory
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-slate-400 text-xs sm:text-sm mt-1">
             Real-time management and tracking of hospital machinery status.
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setSelectedEquipment(null);
-            setIsModalOpen(true);
-          }}
-          className="bg-linear-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg shadow-teal-500/20 transition cursor-pointer flex items-center justify-center gap-2 text-sm"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Register New Equipment</span>
-        </button>
+        {canManage && (
+          <button
+            onClick={() => {
+              setSelectedEquipment(null);
+              setIsModalOpen(true);
+            }}
+            className="bg-linear-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg shadow-teal-500/20 transition cursor-pointer flex items-center justify-center gap-2 text-sm shrink-0"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Register New Equipment</span>
+          </button>
+        )}
       </div>
 
       {/* KPI Stats Grid */}

@@ -11,6 +11,7 @@ import {
 import type { Equipment } from "../../types";
 import DataTable from "../common/DataTable";
 import type { ColumnDef } from "../common/DataTable";
+import { useAuth } from "../../context/AuthContext";
 
 interface EquipmentTableProps {
   data: Equipment[];
@@ -27,6 +28,10 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
   onReportBreakdown,
   onDelete,
 }) => {
+  const { user } = useAuth();
+  const canManage =
+    user?.role === "ROLE_ADMIN" || user?.role === "ROLE_MANAGER";
+
   const getStatusBadge = (status: Equipment["status"]) => {
     switch (status) {
       case "ACTIVE":
@@ -39,7 +44,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
       case "BROKEN":
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
             Broken
           </span>
         );
@@ -72,7 +77,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
     {
       header: "Serial No.",
       cell: (item) => (
-        <span className="font-mono text-xs text-teal-300 font-semibold bg-teal-500/10 border border-teal-500/20 px-2.5 py-1 rounded-lg">
+        <span className="font-mono text-xs text-teal-300 font-bold bg-slate-950 border border-slate-800 px-2.5 py-1 rounded-lg inline-block">
           {item.serialNumber}
         </span>
       ),
@@ -80,8 +85,8 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
     {
       header: "Department / Location",
       cell: (item) => (
-        <div className="space-y-1 text-xs">
-          <div className="flex items-center gap-1.5 text-slate-300 font-medium">
+        <div className="space-y-0.5 text-xs text-slate-300">
+          <div className="flex items-center gap-1.5 font-semibold">
             <Building2 className="w-3.5 h-3.5 text-slate-400" />
             <span>{item.department}</span>
           </div>
@@ -96,7 +101,10 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
       header: "Operational Status",
       cell: (item) => getStatusBadge(item.status),
     },
-    {
+  ];
+
+  if (canManage) {
+    columns.push({
       header: "Actions",
       className: "text-right",
       cell: (item) => (
@@ -114,7 +122,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 top-full mt-1 w-48 origin-top-right rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-1.5 focus:outline-none z-50">
+              <Menu.Items className="absolute right-full top-1/2 -translate-y-1/2 mr-2 w-48 origin-right rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-1.5 focus:outline-none z-50">
                 <Menu.Item>
                   {({ active }) => (
                     <button
@@ -158,7 +166,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
                       } flex items-center gap-2.5 w-full px-3 py-2 text-xs font-semibold rounded-lg transition cursor-pointer border-t border-slate-800/80 mt-1 pt-2`}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Delete Equipment</span>
+                      <span>Delete</span>
                     </button>
                   )}
                 </Menu.Item>
@@ -167,8 +175,8 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
           </Menu>
         </div>
       ),
-    },
-  ];
+    });
+  }
 
   return (
     <DataTable
@@ -177,7 +185,7 @@ export const EquipmentTable: React.FC<EquipmentTableProps> = ({
       isLoading={isLoading}
       searchKey="name"
       searchPlaceholder="Search by equipment name or model..."
-      emptyMessage="No equipment registered in inventory"
+      emptyMessage="No equipment found in inventory"
     />
   );
 };

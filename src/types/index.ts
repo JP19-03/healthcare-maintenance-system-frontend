@@ -97,7 +97,7 @@ export const AssignTechnicianSchema = z.object({
 export type AssignTechnicianFormData = z.infer<typeof AssignTechnicianSchema>;
 
 export const ResolveTicketSchema = z.object({
-    technicalNotes: z.string().min(5, 'Technical notes must be at least 5 characters long'),
+    technicalNotes: z.string().min(3, 'Technical notes must be at least 3 characters long'),
 });
 export type ResolveTicketFormData = z.infer<typeof ResolveTicketSchema>;
 
