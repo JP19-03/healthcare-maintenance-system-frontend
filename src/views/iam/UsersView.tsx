@@ -1,17 +1,42 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Users, Shield, UserCheck, Wrench } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { Users, Shield, UserCheck, Wrench, UserPlus } from "lucide-react";
 import { userService } from "../../services/userService";
+import { authService } from "../../services/authService";
+import type { SignUpFormData } from "../../types";
 import { UserTable } from "../../components/iam/UserTable";
+import CreateUserModal from "../../components/iam/CreateUserModal";
 
 export default function UsersView() {
+  const queryClient = useQueryClient();
   const [selectedRoleFilter, setSelectedRoleFilter] = useState<string>("ALL");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Fetch all users
   const { data: userList = [], isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: userService.getAllUsers,
   });
+
+  // Create User Mutation (Sign Up)
+  const createUserMutation = useMutation({
+    mutationFn: authService.signUp,
+    onSuccess: () => {
+      toast.success("User account created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setIsCreateModalOpen(false);
+    },
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message || "Error creating user account",
+      );
+    },
+  });
+
+  const handleCreateUserSubmit = (formData: SignUpFormData) => {
+    createUserMutation.mutate(formData);
+  };
 
   // Filtered Users List
   const filteredUsers = userList.filter((user) => {
@@ -35,9 +60,18 @@ export default function UsersView() {
             User & Staff Management
           </h1>
           <p className="text-slate-400 text-sm mt-1">
-            Directory of hospital staff, administrators, and biomedical technicians.
+            Directory of hospital staff, administrators, and biomedical
+            technicians.
           </p>
         </div>
+
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="bg-linear-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white font-bold px-5 py-3 rounded-xl shadow-lg shadow-teal-500/20 transition cursor-pointer flex items-center justify-center gap-2 text-sm shrink-0"
+        >
+          <UserPlus className="w-5 h-5" />
+          <span>Create New User</span>
+        </button>
       </div>
 
       {/* Stats KPI */}
@@ -88,7 +122,11 @@ export default function UsersView() {
         {[
           { key: "ALL", label: "All", count: totalUsers },
           { key: "ROLE_ADMIN", label: "Administrators", count: adminCount },
-          { key: "ROLE_MANAGER", label: "Department Heads", count: managerCount },
+          {
+            key: "ROLE_MANAGER",
+            label: "Department Heads",
+            count: managerCount,
+          },
           { key: "ROLE_TECH", label: "Technicians", count: techCount },
         ].map((tab) => (
           <button
@@ -110,6 +148,14 @@ export default function UsersView() {
 
       {/* User Table */}
       <UserTable data={filteredUsers} isLoading={isLoading} />
+
+      {/* Create User Modal */}
+      <CreateUserModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateUserSubmit}
+        isLoading={createUserMutation.isPending}
+      />
     </div>
   );
 }

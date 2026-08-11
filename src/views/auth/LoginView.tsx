@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -88,17 +88,12 @@ export default function LoginView() {
             )}
           </button>
 
-          <nav className="mt-6 text-center">
-            <p className="text-xs text-slate-400">
-              Don't have an account yet?{" "}
-              <Link
-                to="/register"
-                className="text-teal-400 font-semibold hover:text-teal-300 transition hover:underline"
-              >
-                Register here
-              </Link>
+          <div className="mt-6 text-center border-t border-slate-800/80 pt-4">
+            <p className="text-xs text-slate-500">
+              Need access? Contact your hospital System Administrator to create
+              your staff account.
             </p>
-          </nav>
+          </div>
         </form>
       </div>
     </div>
