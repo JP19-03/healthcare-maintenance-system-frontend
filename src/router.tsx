@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
+import DashboardView from "./views/DashboardView";
 import EquipmentView from "./views/inventory/EquipmentView";
 import UsersView from "./views/iam/UsersView";
 import TicketsView from "./views/maintenance/TicketsView";
@@ -22,9 +23,9 @@ export default function Router() {
             </ProtectedRoute>
           }
         >
-          <Route path="/" element={<Navigate to="/equipment" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<DashboardView />} />
           <Route path="/equipment" element={<EquipmentView />} />
-          <Route path="/dashboard" element={<EquipmentView />} />
           <Route path="/tickets" element={<TicketsView />} />
           <Route path="/my-queue" element={<MyQueueView />} />
           <Route

@@ -118,3 +118,41 @@ export const TicketSchema = z.object({
     resolvedAt: z.string().nullable().optional(),
 });
 export type Ticket = z.infer<typeof TicketSchema>;
+
+/** ANALYTICS BOUNDED CONTEXT */
+export interface EquipmentStats {
+    totalCount: number;
+    activeCount: number;
+    brokenCount: number;
+    inMaintenanceCount: number;
+    operationalRatePercentage: number;
+}
+
+export interface TicketStats {
+    totalTickets: number;
+    openTickets: number;
+    inProgressTickets: number;
+    resolvedTickets: number;
+    closedTickets: number;
+    criticalPriorityTickets: number;
+}
+
+export interface EquipmentByDepartment {
+    department: string;
+    count: number;
+}
+
+export interface TechPerformance {
+    techUserId: number;
+    techName: string;
+    totalAssigned: number;
+    resolvedCount: number;
+}
+
+export interface DashboardSummary {
+    equipmentStats: EquipmentStats;
+    ticketStats: TicketStats;
+    equipmentByDepartment: EquipmentByDepartment[];
+    technicianPerformance: TechPerformance[];
+    meanTimeToResolutionHours: number;
+}
