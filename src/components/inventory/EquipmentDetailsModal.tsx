@@ -1,13 +1,7 @@
 import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  X,
-  Stethoscope,
-  Building2,
-  MapPin,
-  ClipboardList
-} from "lucide-react";
+import { X, Stethoscope, Building2, MapPin, ClipboardList } from "lucide-react";
 import { equipmentService } from "../../services/equipmentService";
 import { ticketService } from "../../services/ticketService";
 import type { Ticket } from "../../types";
@@ -205,7 +199,7 @@ export default function EquipmentDetailsModal({
                         </div>
                       ) : (
                         <div className="border border-slate-800 rounded-xl overflow-x-auto max-h-60 overflow-y-auto">
-                          <table className="w-full text-left text-xs min-w-[550px]">
+                          <table className="w-full text-left text-xs min-w-137.5">
                             <thead className="bg-slate-950/80 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800 sticky top-0 backdrop-blur-md">
                               <tr>
                                 <th className="px-3 py-2">Ticket ID</th>

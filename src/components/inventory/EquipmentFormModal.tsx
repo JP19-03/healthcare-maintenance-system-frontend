@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { X, Stethoscope } from 'lucide-react';
-import { CreateEquipmentSchema } from '../../types';
-import type { CreateEquipmentFormData, Equipment } from '../../types';
-import ErrorMessage from '../ErrorMessage';
+import React, { useEffect } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { X, Stethoscope } from "lucide-react";
+import { CreateEquipmentSchema } from "../../types";
+import type { CreateEquipmentFormData, Equipment } from "../../types";
+import ErrorMessage from "../ErrorMessage";
 
 interface EquipmentFormModalProps {
   isOpen: boolean;
@@ -32,11 +32,11 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
   } = useForm<CreateEquipmentFormData>({
     resolver: zodResolver(CreateEquipmentSchema),
     defaultValues: {
-      name: '',
-      serialNumber: '',
-      model: '',
-      location: '',
-      department: '',
+      name: "",
+      serialNumber: "",
+      model: "",
+      location: "",
+      department: "",
     },
   });
 
@@ -51,11 +51,11 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
       });
     } else {
       reset({
-        name: '',
-        serialNumber: '',
-        model: '',
-        location: '',
-        department: '',
+        name: "",
+        serialNumber: "",
+        model: "",
+        location: "",
+        department: "",
       });
     }
   }, [initialData, reset, isOpen]);
@@ -99,12 +99,14 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                     </div>
                     <div>
                       <Dialog.Title className="text-lg font-bold text-white">
-                        {isEditing ? 'Editar Equipo Médico' : 'Registrar Nuevo Equipo'}
+                        {isEditing
+                          ? "Edit Medical Equipment"
+                          : "Register New Equipment"}
                       </Dialog.Title>
                       <p className="text-xs text-slate-400">
                         {isEditing
-                          ? 'Modifica los datos del equipo seleccionado'
-                          : 'Ingresa los detalles para dar de alta un equipo en inventario'}
+                          ? "Modify the selected equipment details"
+                          : "Enter details to add a new equipment to inventory"}
                       </p>
                     </div>
                   </div>
@@ -117,73 +119,88 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+                <form
+                  onSubmit={handleSubmit(handleFormSubmit)}
+                  className="space-y-4"
+                >
                   <div>
                     <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                      Nombre del Equipo
+                      Equipment Name
                     </label>
                     <input
                       type="text"
-                      placeholder="Ej. Resonador Magnético 3T"
-                      {...register('name')}
+                      placeholder="e.g. 3T MRI Scanner"
+                      {...register("name")}
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                     />
-                    {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+                    {errors.name && (
+                      <ErrorMessage>{errors.name.message}</ErrorMessage>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        N° de Serie
+                        Serial Number
                       </label>
                       <input
                         type="text"
-                        placeholder="Ej. SN-MRI-902"
-                        {...register('serialNumber')}
+                        placeholder="e.g. SN-MRI-902"
+                        {...register("serialNumber")}
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition font-mono"
                       />
-                      {errors.serialNumber && <ErrorMessage>{errors.serialNumber.message}</ErrorMessage>}
+                      {errors.serialNumber && (
+                        <ErrorMessage>
+                          {errors.serialNumber.message}
+                        </ErrorMessage>
+                      )}
                     </div>
 
                     <div>
                       <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Modelo
+                        Model
                       </label>
                       <input
                         type="text"
-                        placeholder="Ej. Magnetom Vida"
-                        {...register('model')}
+                        placeholder="e.g. Magnetom Vida"
+                        {...register("model")}
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                       />
-                      {errors.model && <ErrorMessage>{errors.model.message}</ErrorMessage>}
+                      {errors.model && (
+                        <ErrorMessage>{errors.model.message}</ErrorMessage>
+                      )}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Departamento
+                        Department
                       </label>
                       <input
                         type="text"
-                        placeholder="Ej. Radiología"
-                        {...register('department')}
+                        placeholder="e.g. Radiology"
+                        {...register("department")}
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                       />
-                      {errors.department && <ErrorMessage>{errors.department.message}</ErrorMessage>}
+                      {errors.department && (
+                        <ErrorMessage>{errors.department.message}</ErrorMessage>
+                      )}
                     </div>
 
                     <div>
                       <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                        Ubicación / Sala
+                        Location / Room
                       </label>
                       <input
                         type="text"
-                        placeholder="Ej. Sala 302"
-                        {...register('location')}
+                        placeholder="e.g. Room 302"
+                        {...register("location")}
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
                       />
-                      {errors.location && <ErrorMessage>{errors.location.message}</ErrorMessage>}
+                      {errors.location && (
+                        <ErrorMessage>{errors.location.message}</ErrorMessage>
+                      )}
                     </div>
                   </div>
 
@@ -194,20 +211,22 @@ export const EquipmentFormModal: React.FC<EquipmentFormModalProps> = ({
                       onClick={onClose}
                       className="px-4 py-2.5 rounded-xl border border-slate-800 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition cursor-pointer"
                     >
-                      Cancelar
+                      Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white text-sm font-bold shadow-lg shadow-teal-500/20 transition cursor-pointer disabled:opacity-50 flex items-center gap-2"
+                      className="px-5 py-2.5 rounded-xl bg-linear-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white text-sm font-bold shadow-lg shadow-teal-500/20 transition cursor-pointer disabled:opacity-50 flex items-center gap-2"
                     >
                       {isLoading ? (
                         <>
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          <span>Guardando...</span>
+                          <span>Saving...</span>
                         </>
                       ) : (
-                        <span>{isEditing ? 'Guardar Cambios' : 'Registrar Equipo'}</span>
+                        <span>
+                          {isEditing ? "Save Changes" : "Register Equipment"}
+                        </span>
                       )}
                     </button>
                   </div>

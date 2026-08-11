@@ -40,7 +40,7 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       label: "Dashboard",
       path: "/dashboard",
       icon: LayoutDashboard,
-      roles: ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TECH"],
+      roles: ["ROLE_ADMIN", "ROLE_MANAGER"],
     },
     {
       label: "Equipment",
